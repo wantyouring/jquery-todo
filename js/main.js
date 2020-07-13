@@ -2,5 +2,6 @@
 requirejs.config({
     paths: {
         jquery: '../libs/jquery-3.5.1.min',
+        jsrender: '../libs/jsrender.min',
     },
 });
