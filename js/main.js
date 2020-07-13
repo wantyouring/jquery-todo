@@ -6,3 +6,6 @@ requirejs.config({
         text: '../libs/text',
     },
 });
+
+// main js코드
+require(['Controllers/Controller']);
