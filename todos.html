@@ -1,33 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-framework="jquery">
     <head>
-        <meta charset="utf-8" />
-        <title>todo MVC</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>jQuery • TodoMVC</title>
+        <link rel="stylesheet" href="css/base.css" />
+        <link rel="stylesheet" href="css/app.css" />
+        <link rel="stylesheet" href="css/index.css" />
     </head>
-    <body>
-        <div id="container">
-            <div class="header">
-                <h1>Todos</h1>
-            </div>
-
-            <div class="body">
-                <div class="todo-header">
-                    <span class="new-todo"></span>
-                </div>
-                <div class="todo-body">
-                    <div class="todos">
-                        <div class="todo"></div>
-                    </div>
-                    <div class="todo-footer"></div>
-                </div>
-            </div>
-
-            <div class="footer">
-                <div>Double-click to edit a todo</div>
-                <div>Created by Wantyouring</div>
-                <div>Part of TodoMVC</div>
-            </div>
-        </div>
+    <body class="learn-bar">
+        <section class="todoapp">
+            <header class="header">
+                <h1>todos</h1>
+                <input class="new-todo" placeholder="What needs to be done?" autofocus="" />
+            </header>
+            <section class="main">
+                <input id="toggle-all" class="toggle-all" type="checkbox" />
+                <label for="toggle-all">Mark all as complete</label>
+                <ul class="todo-list"></ul>
+            </section>
+            <footer class="footer"></footer>
+        </section>
+        <footer class="info">
+            <p>Double-click to edit a todo</p>
+            <p>Created by <a href="http://sindresorhus.com/">Sindre Sorhus</a></p>
+            <p>Part of <a href="http://todomvc.com/">TodoMVC</a></p>
+        </footer>
         <script data-main="js/main" src="libs/require.js"></script>
     </body>
 </html>
