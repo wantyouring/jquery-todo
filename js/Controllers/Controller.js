@@ -26,4 +26,20 @@ define([
             HeaderView.clearInput();
         }
     });
+
+    $('.todo-list').on('click', 'li', function (e) {
+        var dataId = $(e.currentTarget).attr('id');
+
+        if ($(e.target).hasClass('toggle')) {
+            todos.forEach(function (todo) {
+                if (todo.dataId === dataId) {
+                    $('#' + dataId)
+                        .toggleClass('completed')
+                        .find('input:checkbox')
+                        .prop('checked', !todo.isCompleted);
+                    todo.setIsCompleted(!todo.isCompleted);
+                }
+            });
+        }
+    });
 });
