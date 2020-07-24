@@ -15,6 +15,8 @@ define([
         BodyView.addTodo(todo);
     });
 
+    BodyView.toggleMain(todos);
+
     $('.new-todo').keypress(function (e) {
         var value = e.currentTarget.value;
         var todo = new Todo({ title: value });
@@ -24,6 +26,7 @@ define([
             localStorage.setItem('todos-data', JSON.stringify(todos));
             BodyView.addTodo(todo);
             HeaderView.clearInput();
+            HeaderView.setToggleAllButton(false);
         }
     });
 
@@ -33,13 +36,26 @@ define([
         if ($(e.target).hasClass('toggle')) {
             todos.forEach(function (todo) {
                 if (todo.dataId === dataId) {
-                    $('#' + dataId)
-                        .toggleClass('completed')
-                        .find('input:checkbox')
-                        .prop('checked', !todo.isCompleted);
+                    BodyView.toggleTodo(todo);
                     todo.setIsCompleted(!todo.isCompleted);
                 }
             });
         }
+        HeaderView.setToggleAllButton(
+            todos.every(function (todo) {
+                return todo.isCompleted;
+            })
+        );
+    });
+
+    $('#toggle-all').click(function () {
+        var allChecked = todos.every(function (todo) {
+            return todo.isCompleted;
+        });
+        todos.forEach(function (todo) {
+            todo.setIsCompleted(!allChecked);
+        });
+        HeaderView.setToggleAllButton(!allChecked);
+        BodyView.toggleTodos(allChecked);
     });
 });
