@@ -4,7 +4,12 @@ define([
     'Views/BodyView',
     'Models/Todo',
 ], function ($, HeaderView, BodyView, Todo) {
-    var todos = [];
+    var str = localStorage.getItem('todos-data');
+    var todos = str ? JSON.parse(str) : [];
+
+    todos.forEach(function (todo) {
+        BodyView.addTodo(todo);
+    });
 
     $('.new-todo').keypress(function (e) {
         var value = e.currentTarget.value;
@@ -12,6 +17,7 @@ define([
 
         if (e.keyCode === 13 && typeof value !== 'undefined' && value) {
             todos.push(todo);
+            localStorage.setItem('todos-data', JSON.stringify(todos));
             BodyView.addTodo(todo);
             HeaderView.clearInput();
         }
