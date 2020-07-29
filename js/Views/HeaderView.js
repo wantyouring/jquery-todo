@@ -7,6 +7,7 @@ define(['jquery'], function ($) {
 
     function clearInput() {
         $newTodo.val('');
+        setToggleAllButton(false);
     }
 
     function setToggleAllButton(allChecked) {

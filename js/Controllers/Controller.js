@@ -2,20 +2,19 @@ define([
     'jquery',
     'Views/HeaderView',
     'Views/BodyView',
+    'Views/FooterView',
     'Models/Todo',
-], function ($, HeaderView, BodyView, Todo) {
+], function ($, HeaderView, BodyView, FooterView, Todo) {
     var str = localStorage.getItem('todos-data');
     var todos = str ? JSON.parse(str) : [];
+    var filter = window.location.hash.substring(2) || 'all';
 
     todos = todos.map(function (todo) {
         return new Todo(todo);
     });
 
-    todos.forEach(function (todo) {
-        BodyView.addTodo(todo);
-    });
-
-    BodyView.toggleMain(todos);
+    BodyView.renderTodos(todos);
+    FooterView.updateFooter();
 
     $('.new-todo').keypress(function (e) {
         var value = e.currentTarget.value.trim();
@@ -26,7 +25,6 @@ define([
             localStorage.setItem('todos-data', JSON.stringify(todos));
             BodyView.addTodo(todo);
             HeaderView.clearInput();
-            HeaderView.setToggleAllButton(false);
         }
     });
 
@@ -36,11 +34,11 @@ define([
         if ($(e.target).hasClass('toggle')) {
             todos.forEach(function (todo) {
                 if (todo.dataId === dataId) {
-                    BodyView.toggleTodo(todo);
                     todo.setIsCompleted(!todo.isCompleted);
                 }
             });
         }
+        BodyView.renderTodos(todos);
         HeaderView.setToggleAllButton(
             todos.every(function (todo) {
                 return todo.isCompleted;
@@ -56,6 +54,13 @@ define([
             todo.setIsCompleted(!allChecked);
         });
         HeaderView.setToggleAllButton(!allChecked);
-        BodyView.toggleTodos(allChecked);
+        BodyView.renderTodos(todos);
+    });
+
+    $('.filters li a').click(function (e) {
+        filter = $(e.currentTarget).attr('id');
+
+        BodyView.handleFilter(filter, todos);
+        FooterView.handleFilter(filter);
     });
 });
