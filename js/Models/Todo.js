@@ -1,8 +1,8 @@
 define(function () {
-    function Todo(title) {
-        this.dataId = uuidv4();
-        this.title = title;
-        this.isCompleted = false;
+    function Todo(todo) {
+        this.dataId = todo.dataId || uuidv4();
+        this.title = todo.title;
+        this.isCompleted = todo.isCompleted || false;
     }
 
     Todo.prototype.setIsCompleted = function (isCompleted) {
