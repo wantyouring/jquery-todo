@@ -66,4 +66,12 @@ define([
         BodyView.handleFilter(filter, todos);
         FooterView.handleFilter(filter);
     });
+
+    $('.clear-completed').click(function () {
+        todos = todos.filter(function (todo) {
+            return !todo.isCompleted;
+        });
+        BodyView.renderTodos(todos);
+        FooterView.updateFooter(todos);
+    });
 });

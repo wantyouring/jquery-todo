@@ -2,6 +2,7 @@ define(['jquery'], function ($) {
     var $footer = $('.footer'),
         $activeTodosCount = $('#active-todos-count'),
         $activeTodosWord = $('#active-todos-word'),
+        $clearCompleted = $('.clear-completed'),
         $filters = $('.filters'),
         filter = window.location.hash.substring(2) || 'all';
 
@@ -18,6 +19,7 @@ define(['jquery'], function ($) {
         var _activeTodosCount = activeTodosCount(todos);
         $activeTodosCount.text(_activeTodosCount);
         $activeTodosWord.text(_activeTodosCount === 1 ? 'item' : 'items');
+        setClearCompletedButton(todos);
         updateFilter();
         showFooter(todos.length !== 0);
     }
@@ -26,6 +28,15 @@ define(['jquery'], function ($) {
         return todos.filter(function (todo) {
             return !todo.isCompleted;
         }).length;
+    }
+
+    function setClearCompletedButton(todos) {
+        $clearCompleted.toggleClass(
+            'hide',
+            todos.every(function (todo) {
+                return !todo.isCompleted;
+            })
+        );
     }
 
     function updateFilter() {
