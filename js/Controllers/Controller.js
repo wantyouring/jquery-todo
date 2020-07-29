@@ -14,7 +14,7 @@ define([
     });
 
     BodyView.renderTodos(todos);
-    FooterView.updateFooter();
+    FooterView.updateFooter(todos);
 
     $('.new-todo').keypress(function (e) {
         var value = e.currentTarget.value.trim();
@@ -25,6 +25,7 @@ define([
             localStorage.setItem('todos-data', JSON.stringify(todos));
             BodyView.addTodo(todo);
             HeaderView.clearInput();
+            FooterView.updateFooter(todos);
         }
     });
 
@@ -44,6 +45,7 @@ define([
                 return todo.isCompleted;
             })
         );
+        FooterView.updateFooter(todos);
     });
 
     $('#toggle-all').click(function () {
@@ -55,6 +57,7 @@ define([
         });
         HeaderView.setToggleAllButton(!allChecked);
         BodyView.renderTodos(todos);
+        FooterView.updateFooter(todos);
     });
 
     $('.filters li a').click(function (e) {
