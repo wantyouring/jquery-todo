@@ -18,7 +18,7 @@ define([
     BodyView.toggleMain(todos);
 
     $('.new-todo').keypress(function (e) {
-        var value = e.currentTarget.value;
+        var value = e.currentTarget.value.trim();
         var todo = new Todo({ title: value });
 
         if (e.keyCode === 13 && typeof value !== 'undefined' && value) {
