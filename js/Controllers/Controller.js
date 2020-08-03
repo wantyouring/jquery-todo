@@ -8,6 +8,9 @@ define([
     var str = localStorage.getItem('todos-data');
     var todos = str ? JSON.parse(str) : [];
     var filter = window.location.hash.substring(2) || 'all';
+    var saveStorage = function () {
+        localStorage.setItem('todos-data', JSON.stringify(todos));
+    };
 
     todos = todos.map(function (todo) {
         return new Todo(todo);
@@ -22,7 +25,7 @@ define([
 
         if (e.keyCode === 13 && typeof value !== 'undefined' && value) {
             todos.push(todo);
-            localStorage.setItem('todos-data', JSON.stringify(todos));
+            saveStorage();
             BodyView.addTodo(todo);
             HeaderView.clearInput();
             FooterView.updateFooter(todos);
@@ -39,6 +42,7 @@ define([
                 }
             });
         }
+        saveStorage();
         BodyView.renderTodos(todos);
         HeaderView.setToggleAllButton(
             todos.every(function (todo) {
@@ -55,6 +59,7 @@ define([
         todos.forEach(function (todo) {
             todo.setIsCompleted(!allChecked);
         });
+        saveStorage();
         HeaderView.setToggleAllButton(!allChecked);
         BodyView.renderTodos(todos);
         FooterView.updateFooter(todos);
@@ -71,6 +76,7 @@ define([
         todos = todos.filter(function (todo) {
             return !todo.isCompleted;
         });
+        saveStorage();
         BodyView.renderTodos(todos);
         FooterView.updateFooter(todos);
     });
