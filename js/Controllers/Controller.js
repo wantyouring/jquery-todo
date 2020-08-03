@@ -5,25 +5,36 @@ define([
     'Views/FooterView',
     'Models/Todo',
 ], function ($, HeaderView, BodyView, FooterView, Todo) {
+    var ENTER_KEY = 13,
+        ESC_KEY = 27;
     var str = localStorage.getItem('todos-data');
     var todos = str ? JSON.parse(str) : [];
     var filter = window.location.hash.substring(2) || 'all';
     var saveStorage = function () {
         localStorage.setItem('todos-data', JSON.stringify(todos));
     };
+    var callbackTodosChange = function () {
+        HeaderView.setToggleAllButton(
+            todos.every(function (todo) {
+                return todo.isCompleted;
+            })
+        );
+        BodyView.renderTodos(todos);
+        FooterView.updateFooter(todos);
+        saveStorage();
+    };
 
     todos = todos.map(function (todo) {
         return new Todo(todo);
     });
 
-    BodyView.renderTodos(todos);
-    FooterView.updateFooter(todos);
+    callbackTodosChange();
 
     $('.new-todo').keypress(function (e) {
         var value = e.currentTarget.value.trim();
         var todo = new Todo({ title: value });
 
-        if (e.keyCode === 13 && typeof value !== 'undefined' && value) {
+        if (e.keyCode === ENTER_KEY && typeof value !== 'undefined' && value) {
             todos.push(todo);
             saveStorage();
             BodyView.addTodo(todo);
@@ -32,37 +43,52 @@ define([
         }
     });
 
-    $('.todo-list').on('click', 'li', function (e) {
-        var dataId = $(e.currentTarget).attr('id');
+    $('.todo-list')
+        .on('click', '.toggle', function (e) {
+            var dataId = $(e.target).closest('li').attr('id');
 
-        if ($(e.target).hasClass('toggle')) {
             todos.forEach(function (todo) {
                 if (todo.dataId === dataId) {
                     todo.setIsCompleted(!todo.isCompleted);
                 }
             });
-        }
-        saveStorage();
-        BodyView.renderTodos(todos);
-        HeaderView.setToggleAllButton(
-            todos.every(function (todo) {
-                return todo.isCompleted;
-            })
-        );
-        FooterView.updateFooter(todos);
-    });
+            callbackTodosChange();
+        })
+        .on('dblclick', 'label', function (e) {
+            var $todo = $(e.target).closest('li'),
+                $input = $todo.find('.edit'),
+                title = $input.val();
 
-    $('#toggle-all').click(function () {
-        var allChecked = todos.every(function (todo) {
-            return todo.isCompleted;
+            $todo.addClass('editing');
+            $input.focus().val('').val(title);
+        })
+        .on('focusout', '.edit', function (e) {
+            var $target = $(e.target).closest('li');
+            var dataId = $target.attr('id');
+            var title = $target.find('.edit').val();
+
+            todos.forEach(function (todo, index) {
+                if (todo.dataId === dataId) {
+                    title ? todo.setTitle(title) : todos.splice(index, 1);
+                }
+            });
+            callbackTodosChange();
+        })
+        .on('keyup', '.edit', function (e) {
+            if (e.keyCode !== ENTER_KEY && e.keyCode !== ESC_KEY) {
+                return;
+            }
+            var $target = $(e.target).closest('li');
+            if (e.keyCode === ESC_KEY)
+                $target.find('.edit').val($target.find('label').text());
+            e.target.blur();
         });
+
+    $('#toggle-all').click(function (e) {
         todos.forEach(function (todo) {
-            todo.setIsCompleted(!allChecked);
+            todo.setIsCompleted(e.target.checked);
         });
-        saveStorage();
-        HeaderView.setToggleAllButton(!allChecked);
-        BodyView.renderTodos(todos);
-        FooterView.updateFooter(todos);
+        callbackTodosChange();
     });
 
     $('.filters li a').click(function (e) {
