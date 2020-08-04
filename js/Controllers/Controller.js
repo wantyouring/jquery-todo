@@ -82,6 +82,17 @@ define([
             if (e.keyCode === ESC_KEY)
                 $target.find('.edit').val($target.find('label').text());
             e.target.blur();
+        })
+        .on('click', '.destroy', function (e) {
+            var dataId = $(e.target).closest('li').attr('id');
+
+            todos.splice(
+                todos.findIndex(function (todo) {
+                    return todo.dataId === dataId;
+                }),
+                1
+            );
+            callbackTodosChange();
         });
 
     $('#toggle-all').click(function (e) {
